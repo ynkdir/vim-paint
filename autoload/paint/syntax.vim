@@ -13,7 +13,7 @@ function! paint#syntax#render(...)
   if empty(bold)
     let bold = regular
   endif
-  let s:mode = mode
+  let s:.mode = mode
   return s:render(regular, bold)
 endfunction
 
