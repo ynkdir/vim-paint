@@ -88,7 +88,7 @@ function! s:synline(lnum)
           call add(res, [m[1] . repeat(m[2], vw - 1), attr])
         endif
       else
-        let attr = s:synattr(hlID('Normal'))
+        let attr = s:synattr(synID(a:lnum, col, 1))
         call add(res, [repeat(' ', vw), attr])
       endif
     elseif c =~ '[[:cntrl:]]'
