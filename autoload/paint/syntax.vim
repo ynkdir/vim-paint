@@ -144,7 +144,7 @@ function! s:synidattr(id, what)
     let id = synIDtrans(a:id)
   endif
   " Normal's attribute does not effect.
-  if id == hlID('Normal') && a:what !~ '\v^%(fg#?|bg#?|sp#?)$'
+  if id == hlID('Normal') && a:what !~ '\v^%(name|font|fg#?|bg#?|sp#?)$'
     return 0
   endif
   if empty(s:mode)
