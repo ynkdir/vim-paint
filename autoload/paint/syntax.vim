@@ -107,27 +107,26 @@ function! s:synline(lnum)
   return res
 endfunction
 
-function! s:synattr(synid)
-  let id = synIDtrans(a:synid)
+function! s:synattr(id)
   let normal_fg = s:syncolor(hlID('Normal'), 'fg#', [0, 0, 0])
   let normal_bg = s:syncolor(hlID('Normal'), 'bg#', [255, 255, 255])
   let attr = {}
-  let attr.name = s:synidattr(id, 'name')
-  let attr.fg = s:syncolor(id, 'fg#', normal_fg)
-  let attr.bg = s:syncolor(id, 'bg#', normal_bg)
-  let attr.sp = s:syncolor(id, 'sp#', attr.fg)
-  let attr.bold = s:synidattr(id, 'bold')
-  let attr.italic = s:synidattr(id, 'italic')
-  let attr.reverse = s:synidattr(id, 'reverse')
-  let attr.inverse = s:synidattr(id, 'inverse')
-  let attr.standout = s:synidattr(id, 'standout')
-  let attr.underline = s:synidattr(id, 'underline')
-  let attr.undercurl = s:synidattr(id, 'undercurl')
+  let attr.name = s:synidattr(a:id, 'name')
+  let attr.fg = s:syncolor(a:id, 'fg#', normal_fg)
+  let attr.bg = s:syncolor(a:id, 'bg#', normal_bg)
+  let attr.sp = s:syncolor(a:id, 'sp#', attr.fg)
+  let attr.bold = s:synidattr(a:id, 'bold')
+  let attr.italic = s:synidattr(a:id, 'italic')
+  let attr.reverse = s:synidattr(a:id, 'reverse')
+  let attr.inverse = s:synidattr(a:id, 'inverse')
+  let attr.standout = s:synidattr(a:id, 'standout')
+  let attr.underline = s:synidattr(a:id, 'underline')
+  let attr.undercurl = s:synidattr(a:id, 'undercurl')
   return attr
 endfunction
 
 function! s:syncolor(id, what, default)
-  let c = s:synidattr(synIDtrans(a:id), a:what)
+  let c = s:synidattr(a:id, a:what)
   if c =~ '^\d'
     let c = s:cterm_color[c]
   endif
@@ -138,10 +137,20 @@ function! s:syncolor(id, what, default)
 endfunction
 
 function! s:synidattr(id, what)
-  if empty(s:mode)
-    return synIDattr(a:id, a:what)
+  " Normal is not to be translated.
+  if a:id == 0 || a:id == hlID('Normal')
+    let id = hlID('Normal')
   else
-    return synIDattr(a:id, a:what, s:mode)
+    let id = synIDtrans(a:id)
+  endif
+  " Normal's attribute does not effect.
+  if id == hlID('Normal') && a:what !~ '\v^%(fg#?|bg#?|sp#?)$'
+    return 0
+  endif
+  if empty(s:mode)
+    return synIDattr(id, a:what)
+  else
+    return synIDattr(id, a:what, s:mode)
   endif
 endfunction
 
